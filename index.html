@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue Form</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.7/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+  </head>
+  <body>
+
+    <div id="app">
+      <p>Name: 
+      <input type="text" v-model="name"></p>
+      <p>Phone: 
+      <input type="text" v-model="phone"></p>
+      <p>Image: 
+      <input type="file" ref="file" name="file" @change="handleFileUpload"></p>
+      <p><button @click="sendData">send</button></p>
+    </div>
+    
+    <script>
+      new Vue({
+        el: '#app',
+        data: {
+          name: '',
+          phone: '',
+          file: ''
+        },
+        methods: {
+          sendData: function(){
+
+            let config = {
+              headers: { 'content-type': 'multipart/form-data' }
+            }
+
+            let data = new FormData();
+            data.append('name', this.name);
+            data.append('phone', this.phone);
+            data.append('file', this.file);
+
+            axios.post('send.php', data, config)
+            .then(response => {
+              console.log(response);
+            })
+            .catch(error => {
+              console.log(error);
+            });
+          },
+          handleFileUpload(){
+            this.file = this.$refs.file.files[0];
+          }
+        }
+      })
+    </script>
+  </body>
+</html>
